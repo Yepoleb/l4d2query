@@ -1,6 +1,7 @@
 # L4D2query
 
-Library to query additional server data from L4D2 servers.
+Library to query additional server data from L4D2 servers. Hacked together in 4 hours because
+someone messaged me on Steam to ask how to query campaign difficulty and I didn't know at the time.
 
 ## Requirements
 
