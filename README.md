@@ -25,7 +25,7 @@ Python >=3.7, no external dependencies
 
 ### Return Values
 
-* info: TokenPacket
+* query_serverdetails: TokenPacket
 
 ### Exceptions
 
