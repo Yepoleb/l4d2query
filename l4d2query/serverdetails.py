@@ -8,6 +8,9 @@ import socket
 
 from l4d2query.byteio import ByteReader, ByteWriter
 
+DEFAULT_TIMEOUT = 3.0
+DEFAULT_ENCODING = "utf-8"
+
 class TokenType(enum.IntEnum):
     OBJECT = 0
     STRING = 1
@@ -82,9 +85,9 @@ def write_token(writer, token_type, name, value):
     else:
         raise NotImplementedError("Unknown item type: {}".format(token_type))
 
-def decode_tokenpacket(packet_data):
+def decode_tokenpacket(packet_data, encoding):
     stream = io.BytesIO(packet_data)
-    reader = ByteReader(stream, endian=">", encoding="utf-8")
+    reader = ByteReader(stream, endian=">", encoding=encoding)
     packet = TokenPacket()
     packet.header = reader.read(8)
     packet.type = reader.read_uint16()
@@ -113,9 +116,10 @@ def construct_serverdetails(timestamp, pingxuid):
 
     return bytes(stream.getbuffer())
 
-def query_serverdetails(addr, timestamp=0, pingxuid=0):
-    request_data = construct_serverdetails(timestamp=timestamp, pingxuid=pingxuid)
+def query_serverdetails(addr, timeout=DEFAULT_TIMEOUT, encoding=DEFAULT_ENCODING):
+    request_data = construct_serverdetails(timestamp=0, pingxuid=0)
     s = socket.socket(family=socket.AF_INET, type=socket.SOCK_DGRAM)
+    s.settimeout(timeout)
     s.sendto(request_data, addr)
-    response_data = s.recv(65000)
-    return decode_tokenpacket(response_data)
+    response_data = s.recv(65535)
+    return decode_tokenpacket(response_data, encoding=encoding)
