@@ -51,7 +51,7 @@ def read_token(reader):
         value = {}
         while True:
             token = read_token(reader)
-            if token.ttype == 11:
+            if token.ttype == TokenType.END:
                 break
             value[token.key] = token.value
     elif token_type == TokenType.STRING:
