@@ -7,7 +7,7 @@ with open("README.md", "r") as readme:
 
 setuptools.setup(
     name="l4d2query",
-    version="1.0.0",
+    version="2.0.0",
     author="Gabriel Huber",
     author_email="mail@gabrielhuber.at",
     description="Query L4D2 server details",

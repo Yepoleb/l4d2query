@@ -110,11 +110,11 @@ def decode_tokenpacket(packet_data, encoding):
     packet.binary_data = reader.read(binary_size)
     return packet
 
-def construct_serverdetails(timestamp, pingxuid):
+def construct_serverdetails(engine_build, timestamp, pingxuid):
     stream = io.BytesIO()
     writer = ByteWriter(stream, endian="<", encoding="utf-8")
     writer.write(b"\xff\xff\xff\xff\x00\x00\x00\x00") # header
-    writer.write_uint32(2211) # engine_build
+    writer.write_uint32(engine_build) # engine_build
     writer.write_uint32(60) # payload_size
     writer.endian = ">"
     write_token(writer, TokenType.OBJECT, "InetSearchServerDetails", None)
@@ -125,8 +125,8 @@ def construct_serverdetails(timestamp, pingxuid):
     writer.write_uint32(0) # binary size
     return bytes(stream.getbuffer())
 
-def query_serverdetails(addr, timeout=DEFAULT_TIMEOUT, encoding=DEFAULT_ENCODING):
-    request_data = construct_serverdetails(timestamp=time.time(), pingxuid=0)
+def query_serverdetails(addr, engine_build, timeout=DEFAULT_TIMEOUT, encoding=DEFAULT_ENCODING):
+    request_data = construct_serverdetails(engine_build=engine_build, timestamp=time.time(), pingxuid=0)
     s = socket.socket(family=socket.AF_INET, type=socket.SOCK_DGRAM)
     s.settimeout(timeout)
     s.sendto(request_data, addr)
